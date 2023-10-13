@@ -34,7 +34,7 @@ def Register():
             message = Label(anchor=W, bg="#F8F8FF", text="Заполните все поля!", font=font1)
         else:
             if login.get() in file.read().split(): #Если введённые данные уже есть
-                message = Label(anchor=W, bg="#F8F8FF", text="Такой пользователь уже зарегистрирован!", font=font1)  #Сообщение об ошибке авторизации
+                message = Label(anchor=W, bg="#F8F8FF", text="Такой пользователь уже зарегистрирован!", font=font1)  #Сообщение об ошибке регистрации
                 message.pack(padx=6, pady=6)
             else: #Если данные введены впервые
                     file.write(login.get() + " " + password.get() + "\n") #Регистрируем пользователя
