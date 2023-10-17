@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import font
+import os as os
 
 def Autorize():
     def StartGame(): #Создаём окно с игровым полем и открываем его
@@ -10,7 +11,8 @@ def Autorize():
         game.geometry("800x800")
         game.mainloop()
     font1 = font.Font(family= "Verdana", size=11, weight="normal", slant="roman")
-    with open("register.txt", "r+") as file: #Открываем файл с данными пользователей
+    if os.path.exists("register.txt"):
+        file = open("register.txt", "r+") #Открываем файл с данными пользователей
         if not (login.get() or password.get()):
             message = Label(anchor=W, bg="#F8F8FF", text="Заполните все поля!", font=font1)
         else:
@@ -24,22 +26,32 @@ def Autorize():
                 btn = Button(master=start, text="Начать игру", anchor=W, bg="#6A5ACD", fg="#FFFFFF", font=font1, command=StartGame)
                 btn.pack(padx=6, pady=6) 
                 start.mainloop()
-            else: #Если данные введены впервые
+            else:
                 message = Label(anchor=W, bg="#F8F8FF", text="Неверный логин или пароль!", font=font1) #Сообщение об ошибке входа
                 message.pack(padx=6, pady=6)
+    else:  #Если данные введены впервые (файл данных пользователя отсутствует)
+        message = Label(anchor=W, bg="#F8F8FF", text="Вы не зарегистрированы!", font=font1) #Сообщение об ошибке входа
+        message.pack(padx=6, pady=6)
 
 def Register():
-    with open("register.txt", "r+") as file: #Открываем файл с данными пользователей
-        if not (login.get() or password.get()):
-            message = Label(anchor=W, bg="#F8F8FF", text="Заполните все поля!", font=font1)
-        else:
-            if login.get() in file.read().split(): #Если введённые данные уже есть
-                message = Label(anchor=W, bg="#F8F8FF", text="Такой пользователь уже зарегистрирован!", font=font1)  #Сообщение об ошибке регистрации
-                message.pack(padx=6, pady=6)
-            else: #Если данные введены впервые
-                    file.write(login.get() + " " + password.get() + "\n") #Регистрируем пользователя
-                    message = Label(anchor=W, bg="#F8F8FF", text="Вы успешно зарегистрировались!", font=font1) 
-                    message.pack(padx=6, pady=6)
+    if not (login.get() or password.get()):
+        message = Label(anchor=W, bg="#F8F8FF", text="Заполните все поля!", font=font1)
+    elif os.path.exists("register.txt"):
+        file = open("register.txt", "r+") #Открываем файл с данными пользователей
+    else:
+        file = open("register.txt", "w") #Создаём файл с данными пользователей
+        file.write(login.get() + " " + password.get() + "\n") #Регистрируем пользователя
+        file.close()
+        message = Label(anchor=W, bg="#F8F8FF", text="Вы успешно зарегистрировались!", font=font1) 
+        message.pack(padx=6, pady=6)
+    if login.get() in file.read().split(): #Если введённые данные уже есть
+        message = Label(anchor=W, bg="#F8F8FF", text="Такой пользователь уже зарегистрирован!", font=font1)  #Авторизуем пользователя
+        message.pack(padx=6, pady=6)
+    else: #Если данные введены впервые
+        file.write(login.get() + " " + password.get() + "\n") #Регистрируем пользователя
+        file.close()
+        message = Label(anchor=W, bg="#F8F8FF", text="Вы успешно зарегистрировались!", font=font1) 
+        message.pack(padx=6, pady=6)
      
 root = Tk()     # создаем корневой объект - окно
 root.title("Лабораторная работа №9")     # устанавливаем заголовок окна
